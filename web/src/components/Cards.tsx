@@ -38,6 +38,13 @@ export const HighlightCard = ({ task, isUrgent, onClick }: { task: Task; isUrgen
 
       {/* Teks di-push ke kanan (text-right items-end) */}
       <div className="flex flex-col items-end text-right mt-4">
+        {task.course && (
+          <p
+            className={`text-[10px] font-bold tracking-wider uppercase mb-1 truncate w-full ${isUrgent ? "text-rose-400" : "text-slate-400"}`}
+          >
+            {task.course}
+          </p>
+        )}
         <h3 className="font-bold text-lg mb-1 truncate w-full">{task.title}</h3>
         <p className={`text-xs font-medium ${isUrgent ? "text-rose-300" : "text-slate-500"}`}>
           Due: {task.due_date?.split(",")[0] || "Tidak diketahui"}
@@ -48,23 +55,25 @@ export const HighlightCard = ({ task, isUrgent, onClick }: { task: Task; isUrgen
 )
 
 // Komponen List Item untuk area "Tasks"
-export const TaskListItem = ({ task, onClick }: { task: Task; onClick: () => void }) => (
-  <div
-    // Tambahan: relative overflow-hidden
-    className="relative overflow-hidden group flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-300 cursor-pointer border border-transparent hover:border-slate-100"
-    onClick={onClick}
-  >
-    {/* ✨ WATERMARK ICON DI LIST ✨ */}
-    <FiCheckSquare
-      className={`absolute -left-3 -bottom-4 text-6xl transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 pointer-events-none ${
-        task.is_submitted ? "text-emerald-500 opacity-10" : "text-slate-900 opacity-[0.03]"
-      }`}
-    />
+export const TaskListItem = ({ task, onClick }: { task: Task; onClick: () => void }) => {
+  // Simpan status urgent di variabel
+  const isUrgent = !task.is_submitted && task.timestamp && task.timestamp - Date.now() <= 7 * 24 * 60 * 60 * 1000
 
-    {/* Konten Utama */}
-    <div className="relative z-10 flex items-center gap-4 w-full">
+  return (
+    <div
+      className="relative overflow-hidden group flex items-center gap-4 bg-white p-4 rounded-2xl shadow-sm hover:shadow-md hover:scale-[1.01] transition-all duration-300 cursor-pointer border border-transparent hover:border-slate-100"
+      onClick={onClick}
+    >
+      {/* ✨ WATERMARK ICON DI LIST ✨ */}
+      <FiCheckSquare
+        className={`absolute -left-3 -bottom-4 text-6xl transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 pointer-events-none ${
+          task.is_submitted ? "text-emerald-500 opacity-10" : "text-slate-900 opacity-[0.03]"
+        }`}
+      />
+
+      {/* Ikon Kiri Utama */}
       <div
-        className={`p-4 rounded-xl transition-colors duration-300 ${
+        className={`relative z-10 p-3.5 rounded-xl shrink-0 transition-colors duration-300 ${
           task.is_submitted
             ? "bg-emerald-100 text-emerald-600 group-hover:bg-emerald-200"
             : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
@@ -73,35 +82,46 @@ export const TaskListItem = ({ task, onClick }: { task: Task; onClick: () => voi
         <FiCheckSquare className="text-xl" />
       </div>
 
-      {/* Teks di-push agak ke kanan dengan padding-right & text-right */}
-      <div className="flex-1 min-w-0 flex flex-col items-end text-right pr-2">
+      {/* 🌟 LAYOUT BARU: 3 Baris, Rata Kiri, Lega 🌟 */}
+      <div className="relative z-10 flex-1 min-w-0 flex flex-col justify-center">
+        {/* Baris 1: Matkul (Kiri) & Titik Kedip (Kanan Mentok) */}
+        <div className="flex justify-between items-center gap-2 mb-1">
+          {task.course ? (
+            <p className="text-[10px] font-bold tracking-wider uppercase text-slate-400 truncate group-hover:text-emerald-500 transition-colors duration-300">
+              {task.course}
+            </p>
+          ) : (
+            <div className="flex-1"></div>
+          )}
+          <div
+            className={`w-2.5 h-2.5 rounded-full shrink-0 transition-transform duration-300 group-hover:scale-150 ${
+              task.is_submitted ? "bg-emerald-400" : isUrgent ? "bg-rose-400 animate-pulse" : "bg-slate-300"
+            }`}
+          ></div>
+        </div>
+
+        {/* Baris 2: Judul Tugas (Sekarang bisa full dari kiri ke kanan!) */}
         <h4
-          className={`font-semibold text-sm truncate w-full transition-colors duration-300 ${
+          className={`font-semibold text-sm w-full truncate transition-colors duration-300 ${
             task.is_submitted
-              ? "text-emerald-600" // Warna Sukses
-              : task.timestamp && task.timestamp - Date.now() <= 7 * 24 * 60 * 60 * 1000
-                ? "text-rose-600 group-hover:text-rose-500" // Warna Urgent
-                : "text-slate-900 group-hover:text-slate-500" // Warna Biasa
+              ? "text-emerald-600"
+              : isUrgent
+                ? "text-rose-600 group-hover:text-rose-500"
+                : "text-slate-900 group-hover:text-slate-700"
           }`}
         >
           {task.title}
         </h4>
+
+        {/* Baris 3: Tanggal (Di bawah judul persis) */}
         <p
-          className={`text-xs truncate w-full ${
-            task.is_submitted
-              ? "text-emerald-400"
-              : task.timestamp && task.timestamp - Date.now() <= 7 * 24 * 60 * 60 * 1000
-                ? "text-rose-400"
-                : "text-slate-500"
+          className={`text-[11px] font-medium mt-1 truncate w-full transition-colors duration-300 ${
+            task.is_submitted ? "text-emerald-400" : isUrgent ? "text-rose-400" : "text-slate-400"
           }`}
         >
-          {task.due_date || "N/A"}
+          {task.due_date ? task.due_date : "Belum ada tenggat"}
         </p>
       </div>
-
-      <div
-        className={`w-3 h-3 rounded-full shrink-0 transition-transform duration-300 group-hover:scale-125 ${task.is_submitted ? "bg-emerald-400" : "bg-slate-300"}`}
-      ></div>
     </div>
-  </div>
-)
+  )
+}

@@ -1,6 +1,7 @@
 export interface Task {
   id: string | null
   title: string
+  course?: string
   timestamp: number | null
   link: string | null
   description?: string

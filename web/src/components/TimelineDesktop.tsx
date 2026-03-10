@@ -17,7 +17,7 @@ export default function TimelineDesktop({
   onTaskClick,
 }: TimelineProps) {
   return (
-    <div className="hidden md:flex flex-col flex-1 bg-white rounded-3xl p-8 border border-slate-200 shadow-sm max-h-[85vh] overflow-y-auto custom-scrollbar">
+    <div className="sticky top-10 hidden md:flex flex-col flex-1 bg-white rounded-3xl p-8 border border-slate-200 shadow-sm max-h-[85vh] overflow-y-auto custom-scrollbar">
       <div className="mb-8 flex justify-between items-center">
         <h2 className="text-3xl font-extrabold text-slate-950">Timeline Sukses</h2>
         <div className="text-emerald-500 text-2xl p-4 bg-emerald-50 rounded-2xl shadow-inner font-extrabold font-mono">

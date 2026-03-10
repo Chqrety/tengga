@@ -7,6 +7,7 @@ dotenv.config()
 interface Task {
   id: string | null
   title: string
+  course?: string
   timestamp: number | null
   link: string | null
   description?: string
@@ -60,50 +61,76 @@ interface Task {
     let currentTasks: Task[] = []
     let monthsScraped = 0
     const MIN_MONTHS = 2 // Minimal ambil 2 bulan
-    const MAX_MONTHS = 5 // Maksimal ambil 5 bulan (sampai sekitar bulan Juli)
+    const MAX_MONTHS = 5 // Maksimal ambil 5 bulan
     const TARGET_TASKS = 20 // Target standar jumlah tugas
 
     while (monthsScraped < MAX_MONTHS) {
       console.log(`\n🔍 Scraping Kalender Bulan ke-${monthsScraped + 1}...`)
 
-      // Ambil data di bulan yang sedang tampil
-      let monthTasks: Task[] = await page.$$eval('td.day', (dayCells: Element[]) => {
-        const results: Task[] = []
-        for (const cell of dayCells) {
-          const events = cell.querySelectorAll('a[data-action="view-event"]')
-          if (events.length > 0) {
-            const rawTimestamp = cell.getAttribute('data-day-timestamp')
-            const timestampMs = rawTimestamp ? parseInt(rawTimestamp) * 1000 : null
+      // 🛡️ TUNGGU OVERLAY LOADING MOODLE HILANG DULU SEBELUM MULAI
+      await page.waitForSelector('.overlay-icon-container', { state: 'hidden', timeout: 10000 }).catch(() => {})
 
-            events.forEach((el: Element) => {
-              const rawTitle = el.getAttribute('title') || ''
-              const cleanTitle = rawTitle.replace(' is due', '').replace(' opens', '').trim()
-              results.push({
-                id: el.getAttribute('data-event-id'),
-                title: cleanTitle,
-                timestamp: timestampMs,
-                link: el.getAttribute('href'),
-              })
-            })
-          }
+      // 🎯 PENGGUNAAN LOCATOR: Kebal dari error "Element is not attached to DOM"
+      const eventsLocator = page.locator('a[data-action="view-event"]')
+      const eventCount = await eventsLocator.count()
+
+      for (let j = 0; j < eventCount; j++) {
+        // Ambil elemen satu per satu secara langsung dari halaman terbaru
+        const ev = eventsLocator.nth(j)
+        const eventId = await ev.getAttribute('data-event-id')
+        if (!eventId) continue
+
+        // Bersihkan title
+        const rawTitle = (await ev.getAttribute('title')) || ''
+        const cleanTitle = rawTitle.replace(' is due', '').replace(' opens', '').trim()
+
+        // Ambil timestamp dari parent td.day
+        const timestampMs = await ev.evaluate((el) => {
+          const td = el.closest('td.day')
+          const ts = td ? td.getAttribute('data-day-timestamp') : null
+          return ts ? parseInt(ts) * 1000 : null
+        })
+
+        // 🖱️ BUKA MODAL (Pake force biar gak keblokir animasi apapun)
+        await ev.click({ force: true })
+        await page.waitForSelector('.modal-content', { state: 'visible', timeout: 5000 }).catch(() => {})
+
+        // 🎯 AMBIL NAMA MATKUL DARI MODAL
+        const modalData = await page.evaluate(() => {
+          const courseEl = document.querySelector('.modal-content a[href*="course/view.php?id="]')
+          let courseName = courseEl?.textContent?.trim() || ''
+          courseName = courseName.replace(/^\[\d+\]\s*/, '') // Hapus angka kode matkul
+
+          const activityBtn = document.querySelector('.modal-content a.btn-primary')
+          const activityLink = activityBtn ? activityBtn.getAttribute('href') : null
+
+          return { courseName, activityLink }
+        })
+
+        // ❌ TUTUP MODAL
+        await page.keyboard.press('Escape')
+        await page.waitForSelector('.modal-content', { state: 'hidden', timeout: 5000 }).catch(() => {})
+        await page.waitForTimeout(300) // Jeda transisi animasi modal
+
+        // Masukkan ke array jika unik
+        const isDuplicate = currentTasks.some((existing) => existing.id === eventId)
+        if (!isDuplicate) {
+          currentTasks.push({
+            id: eventId,
+            title: cleanTitle,
+            course: modalData.courseName, // ✅ Matkul sukses diselamatkan
+            timestamp: timestampMs,
+            link: modalData.activityLink || (await ev.getAttribute('href')),
+          })
         }
-        return results
-      })
-
-      // Masukkan ke array utama (pastikan tidak ada duplikat)
-      monthTasks.forEach((newTask) => {
-        const isDuplicate = currentTasks.some((existing) => existing.id === newTask.id)
-        if (!isDuplicate) currentTasks.push(newTask)
-      })
+      }
 
       monthsScraped++
       console.log(`📊 Terkumpul sementara: ${currentTasks.length} tugas unik.`)
 
-      // CEK KONDISI BERHENTI (Algoritma Limit)
+      // CEK KONDISI BERHENTI
       if (monthsScraped >= MIN_MONTHS && currentTasks.length >= TARGET_TASKS) {
-        console.log(
-          `✅ Sudah melewati ${MIN_MONTHS} bulan dan mencapai limit (${currentTasks.length} >= ${TARGET_TASKS} tugas). Stop pindah bulan.`,
-        )
+        console.log(`✅ Sudah melewati ${MIN_MONTHS} bulan dan mencapai limit. Stop pindah bulan.`)
         break
       } else if (monthsScraped >= MIN_MONTHS && currentTasks.length < TARGET_TASKS) {
         console.log(`⚠️ Baru ${currentTasks.length} tugas. Masih di bawah ${TARGET_TASKS}. Lanjut ke bulan berikutnya!`)
@@ -111,11 +138,15 @@ interface Task {
 
       // PINDAH KE BULAN BERIKUTNYA
       if (monthsScraped < MAX_MONTHS) {
-        const nextButton = await page.$('.arrow_link.next')
-        if (nextButton) {
-          await nextButton.click()
+        const nextButton = page.locator('.arrow_link.next')
+        if ((await nextButton.count()) > 0) {
+          // 🚀 FORCE CLICK: Tembus paksa overlay loading dari Moodle!
+          await nextButton.click({ force: true })
           console.log('⏳ Menunggu kalender bulan berikutnya dimuat...')
-          await page.waitForTimeout(3000) // Tunggu loading Moodle via AJAX
+
+          // Bot Pintar: Nunggu loading spinner Moodle benar-benar hilang (bukan tebak-tebak 3 detik)
+          await page.waitForSelector('.overlay-icon-container', { state: 'visible', timeout: 5000 }).catch(() => {})
+          await page.waitForSelector('.overlay-icon-container', { state: 'hidden', timeout: 15000 }).catch(() => {})
         } else {
           console.log('⛔ Tombol Next Month tidak ditemukan. Berhenti di sini.')
           break

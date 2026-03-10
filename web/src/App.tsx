@@ -130,7 +130,7 @@ export default function App() {
           {/* Todo Tasks */}
           <div className="mb-8">
             <h2 className="text-xl font-bold text-slate-950 mb-5">Tugas To Do</h2>
-            <div className="space-y-4">
+            <div className="space-y-4 max-h-125 overflow-y-auto custom-scrollbar pr-2 pb-4">
               {todoTasks.length > 0 ? (
                 todoTasks.map((t, i) => <TaskListItem key={t.id || i} task={t} onClick={() => setSelectedTask(t)} />)
               ) : (

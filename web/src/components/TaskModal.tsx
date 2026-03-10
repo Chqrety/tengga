@@ -29,7 +29,7 @@ export default function TaskModal({ task, onClose }: ModalProps) {
     themeColor = {
       header: "bg-rose-600", // Urgent
       button: "bg-rose-600 hover:bg-rose-700 shadow-rose-600/30 text-white",
-      btnText: "Gas Kerjakan Sekarang! 🔥", // Teksnya dibikin panik wkwk
+      btnText: "Gas Kerjakan Sekarang!", // Teksnya dibikin panik wkwk
     }
   }
 
@@ -46,13 +46,23 @@ export default function TaskModal({ task, onClose }: ModalProps) {
         <div
           className={`p-6 text-white flex justify-between items-start transition-colors duration-300 ${themeColor.header}`}
         >
-          <div>
-            <span className="bg-white/20 text-white text-xs font-bold px-3 py-1 rounded-full backdrop-blur-md">
-              {task.status || "Status Unknown"}
-            </span>
-            <h2 className="text-xl font-bold mt-4 leading-tight">{task.title}</h2>
+          <div className="flex-1 min-w-0 pr-4">
+            <div className="flex flex-wrap gap-2 mb-3">
+              <span className="bg-white/20 text-white text-[10px] font-bold px-3 py-1 rounded-full backdrop-blur-md">
+                {task.status || "Status Unknown"}
+              </span>
+              {task.course && (
+                <span className="bg-black/20 text-white text-[10px] font-bold px-3 py-1 rounded-full backdrop-blur-md truncate max-w-50">
+                  {task.course}
+                </span>
+              )}
+            </div>
+            <h2 className="text-xl font-bold leading-tight">{task.title}</h2>
           </div>
-          <button onClick={onClose} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
+          <button
+            onClick={onClose}
+            className="shrink-0 p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+          >
             <FiX className="text-xl" />
           </button>
         </div>
