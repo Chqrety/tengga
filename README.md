@@ -1,8 +1,8 @@
-# 🎯 Tenggat (Kulino Auto-Scraper & Task Manager)
+# 🎯 Tengga (Kulino Auto-Scraper & Task Manager)
 
-**Tenggat** adalah asisten pribadi berbasis otomatisasi untuk mengekstrak, melacak, dan mengelola tugas-tugas kuliah dari portal Moodle/Kulino secara otomatis.
+**Tengga** adalah asisten pribadi berbasis otomatisasi untuk mengekstrak, melacak, dan mengelola tugas-tugas kuliah dari portal Moodle/Kulino secara otomatis.
 
-Daripada mengecek kalender Kulino setiap hari secara manual dan berakhir panik karena ada tugas mepet, Tenggat akan melakukan _deep scraping_ menggunakan Playwright dan menyajikan jadwal tugasmu ke dalam bentuk _dashboard_ web yang modern, rapi, dan estetik.
+Daripada mengecek kalender Kulino setiap hari secara manual dan berakhir panik karena ada tugas mepet, Tengga akan melakukan _deep scraping_ menggunakan Playwright dan menyajikan jadwal tugasmu ke dalam bentuk _dashboard_ web yang modern, rapi, dan estetik.
 
 ## ✨ Fitur Utama
 
