@@ -1,1 +1,122 @@
-[]
+[
+  {
+    "id": "tugas-001",
+    "title": "Tugas Praktikum 1: Setup Routing & Subnetting",
+    "course": "A11.64402 - Jaringan Komputer",
+    "due_date": "Friday, 13 March 2026, 23:59 PM",
+    "timestamp": 1773414928000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-002",
+    "title": "Latihan Mandiri Week 2: Laravel MVC",
+    "course": "A11.64404 - Pemrograman Web Lanjut",
+    "due_date": "Monday, 16 March 2026, 12:00 AM",
+    "timestamp": 1773674128000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-003",
+    "title": "Kuis 2: Subnet Masking",
+    "course": "A11.64402 - Jaringan Komputer",
+    "due_date": "Saturday, 14 March 2026, 12:00 AM",
+    "timestamp": 1773501328000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-004",
+    "title": "Latihan Regex dan FSA",
+    "course": "A11.64401 - Otomata dan Teori Bahasa",
+    "due_date": "Sunday, 15 March 2026, 23:59 PM",
+    "timestamp": 1773587728000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-005",
+    "title": "Project Akhir: Klasifikasi Gambar dengan CNN",
+    "course": "A11.64405 - Pembelajaran Mesin",
+    "due_date": "Saturday, 21 March 2026, 23:59 PM",
+    "timestamp": 1774106128000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-006",
+    "title": "Penyederhanaan Karnaugh Map 4 Variabel",
+    "course": "A11.64407 - Rangkaian Logika Digital",
+    "due_date": "Sunday, 22 March 2026, 23:59 PM",
+    "timestamp": 1774192528000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-007",
+    "title": "Review Paper: K-Means Clustering vs DBSCAN",
+    "course": "A11.64405 - Pembelajaran Mesin",
+    "due_date": "Wednesday, 25 March 2026, 12:00 AM",
+    "timestamp": 1774451728000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-008",
+    "title": "Tugas Teori: Normalisasi Database 1NF - 3NF",
+    "course": "A11.64406 - Sistem Basis Data",
+    "due_date": "Thursday, 26 March 2026, 12:00 AM",
+    "timestamp": 1774538128000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-009",
+    "title": "Setup Middleware & Authentication Laravel",
+    "course": "A11.64404 - Pemrograman Web Lanjut",
+    "due_date": "Saturday, 28 March 2026, 23:59 PM",
+    "timestamp": 1774710928000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-010",
+    "title": "Implementasi Polimorfisme & Inheritance di Java",
+    "course": "A11.64403 - Pemrograman Berorientasi Objek",
+    "due_date": "Wednesday, 1 April 2026, 23:59 PM",
+    "timestamp": 1775056528000,
+    "is_submitted": false
+  },
+  {
+    "id": "tugas-011",
+    "title": "Kuis 1: Konversi NFA ke DFA",
+    "course": "A11.64401 - Otomata dan Teori Bahasa",
+    "due_date": "Friday, 6 March 2026, 23:59 PM",
+    "timestamp": 1772810128000,
+    "is_submitted": true
+  },
+  {
+    "id": "tugas-012",
+    "title": "Pengenalan Class dan Object",
+    "course": "A11.64403 - Pemrograman Berorientasi Objek",
+    "due_date": "Thursday, 5 March 2026, 12:00 AM",
+    "timestamp": 1772723728000,
+    "is_submitted": true
+  },
+  {
+    "id": "tugas-013",
+    "title": "Tugas Pendahuluan: Aljabar Boolean",
+    "course": "A11.64407 - Rangkaian Logika Digital",
+    "due_date": "Sunday, 1 March 2026, 12:00 AM",
+    "timestamp": 1772378128000,
+    "is_submitted": true
+  },
+  {
+    "id": "tugas-014",
+    "title": "Desain ERD Toko Online Pakaian",
+    "course": "A11.64406 - Sistem Basis Data",
+    "due_date": "Saturday, 28 February 2026, 23:59 PM",
+    "timestamp": 1772291728000,
+    "is_submitted": true
+  },
+  {
+    "id": "tugas-015",
+    "title": "Instalasi dan Konfigurasi Cisco Packet Tracer",
+    "course": "A11.64402 - Jaringan Komputer",
+    "due_date": "Wednesday, 25 February 2026, 12:00 AM",
+    "timestamp": 1772032528000,
+    "is_submitted": true
+  }
+]
