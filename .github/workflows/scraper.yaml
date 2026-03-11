@@ -1,0 +1,49 @@
+name: Daily Kulino Scraper 🕷️
+
+# ⚠️ VERSI PUBLIC: Trigger otomatis (cron) dimatikan agar tidak error karena ketiadaan credentials.
+# Hanya menyisakan workflow_dispatch agar bisa dijalankan manual jika di-fork.
+on:
+  # schedule:
+  #   - cron: '0 17 * * *'
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: 📦 Install Scraper Dependencies
+        working-directory: ./scraper
+        run: npm install
+
+      - name: 🌐 Install Playwright Browser
+        working-directory: ./scraper
+        run: npx playwright install chromium --with-deps
+
+      - name: 🚀 Run Scraper Engine
+        working-directory: ./scraper
+        env:
+          KULINO_USER: ${{ secrets.KULINO_USER }}
+          KULINO_PASS: ${{ secrets.KULINO_PASS }}
+        run: npm start
+
+      - name: 💾 Commit & Push Hasil Scrape
+        run: |
+          git config --global user.name "Tengga Bot 🤖"
+          git config --global user.email "bot@tengga.local"
+          git add web/src/data/data.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 auto: update jadwal tugas kulino" && git push)
